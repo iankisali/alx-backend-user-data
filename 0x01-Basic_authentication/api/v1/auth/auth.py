@@ -2,7 +2,6 @@
 """Authenticatin file"""
 from flask import request
 from typing import List, TypeVar
-from tabnanny import check
 User = TypeVar('User')
 
 
@@ -32,7 +31,7 @@ class Auth:
         """returns None - request will be the Flask request object"""
         if request is None:
             return None
-        return request.headers.get("Authorixation")
+        return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> TypeVar('User'):
         """returns none"""
