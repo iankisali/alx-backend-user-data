@@ -45,10 +45,12 @@ def forbidden(error) -> str:
     """403 unauthorized handler"""
     return jsonify({"error": "Forbidden"}), 403
 
+
 @app.before_request
 def before_request():
     """before request handler"""
-    authorized = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
+    authorized = ['/api/v1/status/', '/api/v1/unauthorized/',
+                  '/api/v1/forbidden/']
 
     if auth and auth.require_auth(request.path, authorized):
         if not auth.authorization_header(request):
