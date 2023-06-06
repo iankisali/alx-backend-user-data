@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""DB module
-"""
+"""DB module"""
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -20,7 +19,7 @@ class DB:
     def __init__(self):
         """Initialize a new DB instance
         """
-        self._engine = create_engine("sqlite:///a.db", echo=True)
+        self._engine = create_engine("sqlite:///a.db", echo=False)
         Base.metadata.drop_all(self._engine)
         Base.metadata.create_all(self._engine)
         self.__session = None
@@ -46,8 +45,16 @@ class DB:
         """returns the first row found in the users table"""
         if not kwargs or any(field not in VALID for field in kwargs):
             raise InvalidRequestError
-        session = self._session
         try:
-            return session.query(User).filter_by(**kwargs).one()
+            return self._session.query(User).filter_by(**kwargs).one()
         except Exception:
             raise NoResultFound
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """method will use find_user_by to locate the user to update"""
+        user = self.find_user_by(id=user_id)
+        for i, j in kwargs.items():
+            if i not in VALID:
+                raise ValueError
+            setattr(user, i, j)
+        self._session.commit()
